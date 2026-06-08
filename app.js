@@ -1,15 +1,9 @@
 /* ============================================================
-   서울 본사 장애인기업지원센터 월간 모니터링 리포트 (5월)
-   그래프 1개 = CSV 1개 구조. data/ 폴더의 CSV만 고치면 갱신됨.
-     temp_zone.csv      구역별 온도 (+실외최고기온)
-     temp_ctrl_low.csv  1·2·3·별관 제어기 온도 (+실외)
-     temp_ctrl_6f.csv   6층 제어기 온도 (+실외)
-     temp_ctrl_7f.csv   7층 제어기 온도 (+실외)
-     oper_zone.csv      층별 일평균 가동시간
-     oper_bar.csv       층별 근무내/외 총가동시간
-     increase_work.csv  전월대비 증가(근무시간)
-     increase_off.csv   전월대비 증가(근무외)
-     holidays.csv       주말·공휴일 날짜 목록 (x축 라벨 빨강) — 매달 이 파일만 수정
+   서울 본사 장애인기업종합지원센터 월간 모니터링 리포트
+
+   데이터 파일명은 아래 DATA_FILES 설정표에서 관리합니다.
+   데이터팀이 보낸 CSV를 그 이름 그대로 data/ 폴더에 넣으면
+   새로고침 시 리포트가 자동 갱신됩니다. (파일명이 바뀌면 설정표만 수정)
    ============================================================ */
 
 const DAYS = Array.from({length:31},(_,i)=>i+1);          // 5월 = 31일
@@ -17,6 +11,24 @@ const LC   = ['#2D6BFF','#E5484D','#22C55E','#F59E0B','#7C3AED','#0F766E','#BE18
 const TT   = {backgroundColor:'#0B1220',titleColor:'#fff',bodyColor:'#E5E9F0',padding:10,cornerRadius:8,displayColors:true,boxWidth:10,boxHeight:10,boxPadding:3};
 const OUTDOOR_KEY = '최고기온(℃)';
 let HOLIDAYS = new Set();                                  // holidays.csv에서 채움
+
+/* ✏️ 데이터 파일 설정표 — 데이터팀 파일명을 그대로 적으면 됩니다. (CSV만 지원) */
+const DATA_FILES = {
+  tempZone:  '3-1.csv',    // 섹션3-1 — 구역별 일평균 실내온도
+  ctrlLow:   '3-2.1.csv',  // 섹션3-2-1 — 1·2·3층·별관 제어기 온도
+  ctrl6:     '3-2.2.csv',  // 섹션3-2-2 — 6층 제어기 온도
+  ctrl7:     '3-2.3.csv',  // 섹션3-2-3 — 7층 제어기 온도
+  operZone:  '4-1.csv',    // 섹션4-1 — 구역별 일평균 가동시간
+  operSpace: '4-2.csv',    // 섹션4-2 — 공간구분별 일평균 가동시간
+  incWork:   '4-3.csv',    // 섹션4-3 — 전월대비 증가(근무시간)
+  incOff:    '4-4.csv',    // 섹션4-4 — 전월대비 증가(근무외)
+  holidays:  'holidays.csv' // 보조 — 주말·공휴일 날짜 목록
+};
+
+function dataUrl(name){
+  // CSV를 수정하면 항상 최신 데이터를 다시 불러오도록 매번 다른 값을 붙임
+  return `data/${name}?v=${Date.now()}`;
+}
 
 /* ── CSV 파서 ──────────────────────────────────────────────── */
 function parseCSV(text){
@@ -172,29 +184,26 @@ async function main(){
   Chart.defaults.font.size = 11;
   Chart.defaults.color = '#5B6577';
 
-  const files = [
-    'data/temp_zone.csv','data/temp_ctrl_low.csv','data/temp_ctrl_6f.csv','data/temp_ctrl_7f.csv',
-    'data/oper_zone.csv','data/oper_space.csv','data/increase_work.csv','data/increase_off.csv',
-    'data/holidays.csv'
-  ];
-  let texts;
+  const keys = ['tempZone','ctrlLow','ctrl6','ctrl7','operZone','operSpace','incWork','incOff','holidays'];
+  let txt = {};
   try {
-    const res = await Promise.all(files.map(f=>fetch(f)));
-    if(res.some(r=>!r.ok)) throw new Error('CSV 파일 응답 오류 (HTTP)');
-    texts = await Promise.all(res.map(r=>r.text()));
+    const res = await Promise.all(keys.map(k=>fetch(dataUrl(DATA_FILES[k]))));
+    res.forEach((r,i)=>{ if(!r.ok) throw new Error(`${DATA_FILES[keys[i]]} 응답 오류 (HTTP) — data 폴더의 파일명을 확인하세요`); });
+    const texts = await Promise.all(res.map(r=>r.text()));
+    keys.forEach((k,i)=> txt[k] = texts[i]);
   } catch(e){ showError(e.message); return; }
 
   let tempZone, ctrlLow, ctrl6, ctrl7, operZone, operSpace, incWork, incOff, holiRows;
   try {
-    tempZone  = toSeriesMap(parseCSV(texts[0]));
-    ctrlLow   = toSeriesMap(parseCSV(texts[1]));
-    ctrl6     = toSeriesMap(parseCSV(texts[2]));
-    ctrl7     = toSeriesMap(parseCSV(texts[3]));
-    operZone  = toSeriesMap(parseCSV(texts[4]));
-    operSpace = toSeriesMap(parseCSV(texts[5]));
-    incWork   = toObjects(parseCSV(texts[6]));
-    incOff    = toObjects(parseCSV(texts[7]));
-    holiRows  = toObjects(parseCSV(texts[8]));
+    tempZone  = toSeriesMap(parseCSV(txt.tempZone));
+    ctrlLow   = toSeriesMap(parseCSV(txt.ctrlLow));
+    ctrl6     = toSeriesMap(parseCSV(txt.ctrl6));
+    ctrl7     = toSeriesMap(parseCSV(txt.ctrl7));
+    operZone  = toSeriesMap(parseCSV(txt.operZone));
+    operSpace = toSeriesMap(parseCSV(txt.operSpace));
+    incWork   = toObjects(parseCSV(txt.incWork));
+    incOff    = toObjects(parseCSV(txt.incOff));
+    holiRows  = toObjects(parseCSV(txt.holidays));
   } catch(e){ showError('CSV 파싱 중 오류: ' + e.message); return; }
 
   // 휴일 목록 세팅 (헤더명 무관하게 첫 열 사용)
