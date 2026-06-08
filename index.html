@@ -129,7 +129,7 @@
 <section>
   <div class="sec-head">
     <div class="sec-title"><span class="idx">3</span>서울 실외 최고기온 및 구역별 실내 온도 비교 분석</div>
-    <div class="sec-note">적정 운영 기준 20 — 26℃ · 실외 최고기온은 검은 점선 · 주말·공휴일 날짜는 빨간색 표시</div>
+    <div class="sec-note">적정 운영 기준 20 — 26℃ · 실외 최고기온은 검은 점선 · 28℃ 이상 구간은 빨간색 표시</div>
   </div>
 
   <!-- 구역별 온도 -->
@@ -138,7 +138,7 @@
     <div class="legend-row" id="lg-zone"></div>
     <div class="cw h260"><canvas id="c-temp-zone"></canvas></div>
     <div class="cmnt"><div class="cmnt-bar" style="background:#2D6BFF"></div>
-      <div class="cmnt-text">서울 본사 전체 구역의 5월 일평균 실내 온도는 대체로 20~25℃ 내외에서 유지되었습니다. 7층은 다른 구역 대비 상대적으로 높은 실내 온도를 보였으며, 1층은 동일 건물 내에서 가장 낮은 온도 수준을 기록했습니다. 실외 최고기온(검은 점선) 상승에 따라 전 구역 실내온도가 소폭 상승하는 흐름이 확인됩니다.</div>
+      <div class="cmnt-text">서울 본사 전체 구역의 5월 일평균 실내 온도는 대체로 22~26℃ 내외에서 유지되었습니다. 실외 최고기온이 상승함에 따라 실내온도 평균도 대체로 상승하는 경향이 확인되었습니다. 그러나 5월 14~15일 서울 최고기온이 31℃ 이상을 기록한 구간에서 3층과 6층은 다른 구역 대비 낮은 실내온도 평균을 유지하였으며, 특히 6층은 실외 최고기온 대비 약 8℃ 낮은 수준을 보였습니다.</div>
     </div>
   </div>
 
@@ -150,17 +150,22 @@
     <div class="chart-sub-title">본사 1층 · 2층 · 3층 · 별관</div>
     <div class="legend-row" id="lg-ctrl-low"></div>
     <div class="cw h220"><canvas id="c-temp-ctrl-low"></canvas></div>
+    <div class="cmnt"><div class="cmnt-bar" style="background:#7C3AED"></div>
+      <div class="cmnt-text">제어기 위치별로 살펴보면 동일 층 내에서도 제어기별 온도 편차가 나타납니다. 2층 회의실과 1층 로비는 전반적으로 다른 구역 대비 낮은 실내 평균온도를 보였으며, 월말 고온 구간에서는 3층 회의실도 비교적 낮게 유지되었습니다.</div>
+    </div>
 
     <div class="chart-sub-title" style="margin-top:20px">본사 6층</div>
     <div class="legend-row" id="lg-ctrl-6f"></div>
     <div class="cw h220"><canvas id="c-temp-ctrl-6f"></canvas></div>
+    <div class="cmnt"><div class="cmnt-bar" style="background:#7C3AED"></div>
+      <div class="cmnt-text">제어기 위치별로 살펴보면 동일 층 내에서도 제어기별 온도 편차가 나타납니다. 6층 사무실1, 6층 사무실2, 6층 사무실3은 실외 고온 구간에서 낮은 실내 평균온도를 보였으며, 본부장실·이사장실 대비 낮게 유지되는 구간이 많았습니다.</div>
+    </div>
 
     <div class="chart-sub-title" style="margin-top:20px">본사 7층</div>
     <div class="legend-row" id="lg-ctrl-7f"></div>
     <div class="cw h220"><canvas id="c-temp-ctrl-7f"></canvas></div>
-
     <div class="cmnt"><div class="cmnt-bar" style="background:#7C3AED"></div>
-      <div class="cmnt-text">제어기 위치별로 살펴보면 같은 층 안에서도 제어기에 따라 온도 편차가 나타납니다. 6층과 7층은 제어기 수가 많아 별도 그래프로 분리했으며, 사무실·회의실 등 사용 빈도가 높은 공간에서 상대적으로 높은 온도가 관찰됩니다.</div>
+      <div class="cmnt-text">제어기 위치별로 살펴보면 동일 층 내에서도 제어기별 온도 편차가 나타납니다. 7층 본부장실1과 7층 본부장실2는 고온일에 다른 사무실·회의실 대비 상대적으로 낮은 실내 평균온도를 유지하는 경향을 보였습니다.</div>
     </div>
   </div>
 </section>
@@ -178,7 +183,7 @@
     <div class="legend-row" id="lg-oper"></div>
     <div class="cw h260"><canvas id="c-oper-line"></canvas></div>
     <div class="cmnt"><div class="cmnt-bar" style="background:#2D6BFF"></div>
-      <div class="cmnt-text">3층이 일평균 가동시간 기준 전 구역 중 가장 높은 수준(3.11h)을 기록했습니다. 1층은 5월 중순 이후 가동이 지속되는 패턴이 확인되며, 별관은 가동시간이 매우 낮게 나타났습니다. 주말·공휴일에는 전 구역 가동시간이 크게 감소합니다.</div>
+      <div class="cmnt-text">5월 대부분의 일자에서 구역별 냉난방기 가동이 확인되었으며, 서울 실외 최고기온이 30℃ 이상으로 상승한 5월 14~15일 전후에 실내온도 평균도 함께 상승하는 경향을 보였습니다. 특히 이 시기에는 2층과 3층의 냉난방기 가동시간이 급격히 증가하여, 외기 온도 상승에 따른 냉방 수요 증가가 가동시간 변화에 반영된 것으로 확인됩니다.</div>
     </div>
   </div>
 
@@ -188,7 +193,7 @@
     <div class="legend-row" id="lg-oper-space"></div>
     <div class="cw h220"><canvas id="c-oper-bar"></canvas></div>
     <div class="cmnt"><div class="cmnt-bar" style="background:#2D6BFF"></div>
-      <div class="cmnt-text">사무실 가동시간은 외기온 상승이 본격화된 5월 중순 이후 증가하는 흐름이 확인됩니다. 공용공간은 전반적으로 낮은 수준이나 특정일 가동 집중이 있어 이용 종료 후 잔여 가동 여부를 함께 확인해야 합니다.</div>
+      <div class="cmnt-text">본관 6층과 7층은 사무실, 나머지 공간인 본관 1층, 2층, 3층 및 별관은 공용공간으로 구분하여 공간 구분별 일평균 냉난방기 가동시간을 산출했습니다. 두 공간 유형 5월 중순 이후 외기온 상승에 따라 가동시간이 증가하는 경향을 보였으며, 특히 사무실의 가동시간이 공용공간보다 전반적으로 높게 나타났습니다. 이는 사무실 상주 인원 및 사용 빈도가 높아 냉방 수요가 상대적으로 크게 발생한 결과로 보입니다.</div>
     </div>
   </div>
 
@@ -196,20 +201,26 @@
   <div class="chart-card">
     <div class="chart-card-title">전월 대비 냉난방기 사용량 증가 구역 (평일 근무시간 기준)</div>
     <table class="analysis-table increase-table">
-      <colgroup><col class="inc-col-zone"><col class="inc-col-num"><col class="inc-col-num"><col class="inc-col-num"><col class="inc-col-num"></colgroup>
-      <thead><tr><th>구역</th><th>전월 (h)</th><th>당월 (h)</th><th>증감 (h)</th><th>증감률</th></tr></thead>
+      <colgroup><col class="inc-col-zone"><col class="inc-col-count"><col class="inc-col-num"><col class="inc-col-num"><col class="inc-col-num"><col class="inc-col-num"><col class="inc-col-num"><col class="inc-col-num"></colgroup>
+      <thead><tr><th>구역</th><th>제어기 수</th><th>전월 총 가동시간</th><th>전월 장비당 일평균 가동시간</th><th>당월 총 가동시간</th><th>당월 장비당 일평균 가동시간</th><th>총 가동시간 증감</th><th>장비당 일평균 가동시간 증감</th></tr></thead>
       <tbody id="incWorkB"></tbody>
     </table>
+    <div class="cmnt"><div class="cmnt-bar" style="background:#E5484D"></div>
+      <div class="cmnt-text">공간별 장치 수 차이를 고려할 때, 전월 대비 냉난방기 사용량은 총가동시간 증감뿐만 아니라 장비당 일평균 가동시간 증감도 함께 검토할 필요가 있습니다. 평일 근무시간 기준 서울 본사는 대부분의 구역에서 4월 대비 5월 가동시간이 증가했으며, 특히 6층 사무실은 총가동시간과 장비당 일평균 가동시간 모두 가장 큰 증가폭을 보였습니다. 전반적으로 사무실과 회의실 중심으로 냉난방기 사용량이 증가한 것으로 보입니다.</div>
+    </div>
   </div>
 
   <!-- 전월 대비 증가: 근무시간외 -->
   <div class="chart-card">
     <div class="chart-card-title">전월 대비 냉난방기 사용량 증가 구역 (평일 근무시간외 기준)</div>
     <table class="analysis-table increase-table">
-      <colgroup><col class="inc-col-zone"><col class="inc-col-num"><col class="inc-col-num"><col class="inc-col-num"><col class="inc-col-num"></colgroup>
-      <thead><tr><th>구역</th><th>전월 (h)</th><th>당월 (h)</th><th>증감 (h)</th><th>증감률</th></tr></thead>
+      <colgroup><col class="inc-col-zone"><col class="inc-col-count"><col class="inc-col-num"><col class="inc-col-num"><col class="inc-col-num"><col class="inc-col-num"><col class="inc-col-num"><col class="inc-col-num"></colgroup>
+      <thead><tr><th>구역</th><th>제어기 수</th><th>전월 총 가동시간</th><th>전월 장비당 일평균 가동시간</th><th>당월 총 가동시간</th><th>당월 장비당 일평균 가동시간</th><th>총 가동시간 증감</th><th>장비당 일평균 가동시간 증감</th></tr></thead>
       <tbody id="incOffB"></tbody>
     </table>
+    <div class="cmnt"><div class="cmnt-bar" style="background:#E5484D"></div>
+      <div class="cmnt-text">평일 근무시간외 기준으로는 별관, 1층, 2층을 제외한 대부분의 구역에서 전월 대비 냉난방기 가동시간이 증가하였습니다. 특히 6층 사무실은 총가동시간이 약 70시간 증가했으며, 장비당 일평균 가동시간도 1.05시간 증가하여 근무시간 외 사용 증가가 가장 두드러졌습니다. 근무시간 외 냉난방기 사용은 불필요한 에너지 소비로 이어질 수 있으므로, 퇴실 후 전원 OFF 여부 점검 등 관리가 필요합니다.</div>
+    </div>
   </div>
 </section>
 
@@ -222,6 +233,6 @@
 </div>
 
 
-<script src="app.js?v=20260608-3"></script>
+<script src="app.js?v=20260608-4"></script>
 </body>
 </html>
