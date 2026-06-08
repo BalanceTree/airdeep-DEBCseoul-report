@@ -10,7 +10,7 @@ const DAYS = Array.from({length:31},(_,i)=>i+1);          // 5월 = 31일
 const LC   = ['#2D6BFF','#E5484D','#22C55E','#F59E0B','#7C3AED','#0F766E','#BE185D','#0EA5E9','#78716C','#DB2777'];
 const TT   = {backgroundColor:'#0B1220',titleColor:'#fff',bodyColor:'#E5E9F0',padding:10,cornerRadius:8,displayColors:true,boxWidth:10,boxHeight:10,boxPadding:3};
 const OUTDOOR_KEY = '최고기온(℃)';
-let HOLIDAYS = new Set();                                  // holidays.csv에서 채움
+let HOLIDAYS = new Set();                                  // 날짜에서 자동 계산
 
 /* ✏️ 데이터 파일 설정표 — 데이터팀 파일명을 그대로 적으면 됩니다. (CSV만 지원) */
 const DATA_FILES = {
@@ -21,9 +21,19 @@ const DATA_FILES = {
   operZone:  '4-1.csv',    // 섹션4-1 — 구역별 일평균 가동시간
   operSpace: '4-2.csv',    // 섹션4-2 — 공간구분별 일평균 가동시간
   incWork:   '4-3.csv',    // 섹션4-3 — 전월대비 증가(근무시간)
-  incOff:    '4-4.csv',    // 섹션4-4 — 전월대비 증가(근무외)
-  holidays:  'holidays.csv' // 보조 — 주말·공휴일 날짜 목록
+  incOff:    '4-4.csv'     // 섹션4-4 — 전월대비 증가(근무외)
 };
+
+/* ✏️ 공휴일 날짜 — 주말(토·일)은 자동 계산되고, 여기엔 공휴일만 적으면 됩니다.
+   해당 날짜의 x축 라벨이 빨간색으로 표시됩니다. (매달 이 줄만 갱신) */
+const PUBLIC_HOLIDAYS = ['2026-05-05', '2026-05-25']; // 어린이날 · 대체공휴일
+
+function isHolidayDate(s){
+  const m = String(s ?? '').trim().match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if(!m) return false;
+  const day = new Date(`${m[1]}-${m[2]}-${m[3]}T00:00:00`).getDay();
+  return day === 0 || day === 6 || PUBLIC_HOLIDAYS.includes(m[0]);
+}
 
 function dataUrl(name){
   // CSV를 수정하면 항상 최신 데이터를 다시 불러오도록 매번 다른 값을 붙임
@@ -184,7 +194,7 @@ async function main(){
   Chart.defaults.font.size = 11;
   Chart.defaults.color = '#5B6577';
 
-  const keys = ['tempZone','ctrlLow','ctrl6','ctrl7','operZone','operSpace','incWork','incOff','holidays'];
+  const keys = ['tempZone','ctrlLow','ctrl6','ctrl7','operZone','operSpace','incWork','incOff'];
   let txt = {};
   try {
     const res = await Promise.all(keys.map(k=>fetch(dataUrl(DATA_FILES[k]))));
@@ -193,9 +203,16 @@ async function main(){
     keys.forEach((k,i)=> txt[k] = texts[i]);
   } catch(e){ showError(e.message); return; }
 
-  let tempZone, ctrlLow, ctrl6, ctrl7, operZone, operSpace, incWork, incOff, holiRows;
+  let tempZone, ctrlLow, ctrl6, ctrl7, operZone, operSpace, incWork, incOff;
   try {
-    tempZone  = toSeriesMap(parseCSV(txt.tempZone));
+    const tempRows = parseCSV(txt.tempZone);
+    // 주말·공휴일 자동 계산 (날짜 열 기준) → x축 라벨 빨강 처리
+    HOLIDAYS = new Set();
+    tempRows.slice(1).forEach(r=>{
+      const m = String(r[0] ?? '').trim().match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if(m && isHolidayDate(m[0])) HOLIDAYS.add(Number(m[3]));
+    });
+    tempZone  = toSeriesMap(tempRows);
     ctrlLow   = toSeriesMap(parseCSV(txt.ctrlLow));
     ctrl6     = toSeriesMap(parseCSV(txt.ctrl6));
     ctrl7     = toSeriesMap(parseCSV(txt.ctrl7));
@@ -203,11 +220,7 @@ async function main(){
     operSpace = toSeriesMap(parseCSV(txt.operSpace));
     incWork   = toObjects(parseCSV(txt.incWork));
     incOff    = toObjects(parseCSV(txt.incOff));
-    holiRows  = toObjects(parseCSV(txt.holidays));
   } catch(e){ showError('CSV 파싱 중 오류: ' + e.message); return; }
-
-  // 휴일 목록 세팅 (헤더명 무관하게 첫 열 사용)
-  HOLIDAYS = new Set(holiRows.map(r=>num(Object.values(r)[0])).filter(v=>v!=null));
 
   /* 온도 그래프 (실외 점선) */
   mkTempChart('c-temp-zone',     'lg-zone',     tempZone);
