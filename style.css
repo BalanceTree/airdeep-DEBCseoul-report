@@ -839,6 +839,7 @@ section {
   line-height: 1.35;
   letter-spacing: 0;
   word-break: keep-all;
+  white-space: normal;
 }
 
 .increase-table th:nth-child(1),
@@ -851,7 +852,8 @@ section {
   display: block;
   color: var(--ink);
   font-weight: 700;
-  white-space: nowrap;
+  white-space: normal;
+  word-break: keep-all;
 }
 
 .increase-table td.num {

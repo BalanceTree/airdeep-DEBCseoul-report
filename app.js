@@ -81,6 +81,20 @@ function toObjects(rows){
     const o = {}; header.forEach((h,i)=> o[h] = row[i] ?? ''); return o;
   });
 }
+function fmtHours(v, signed=false){
+  const n = num(v) ?? 0;
+  const abs = Math.abs(n);
+  const txt = abs.toFixed(2).replace(/\.?0+$/, '');
+  return signed && n > 0 ? `+${txt}` : signed && n < 0 ? `-${txt}` : txt;
+}
+function fmtZoneName(v){
+  return String(v || '')
+    .replace(/^본사_/, '')
+    .replace(/_/g, ' ')
+    .replace(/서울(?=\d)/g, '서울 ')
+    .replace(/(\d)층/g, '$1층')
+    .trim();
+}
 
 /* ── 주말·공휴일 x축 라벨 빨강 처리용 콜백 ────────────────── */
 function tickColor(){
@@ -227,7 +241,7 @@ function fillIncreaseTable(tbodyId, rows){
   const tb = document.getElementById(tbodyId);
   if(!tb) return;
   const data = rows.map(r=>{
-    const zone = (r['HUB_NICKNAME'] || r['지역'] || '').replace(/^본사_/, '');
+    const zone = fmtZoneName(r['HUB_NICKNAME'] || r['지역'] || '');
     const prev = num(r['총가동시간_시간_4월']) ?? num(r['전월']) ?? 0;
     const cur  = num(r['총가동시간_시간_5월']) ?? num(r['당월']) ?? 0;
     const deviceCount = num(r['제어기_장치수']) ?? 0;
@@ -238,15 +252,15 @@ function fillIncreaseTable(tbodyId, rows){
     return { zone, deviceCount, prev, prevAvg, cur, curAvg, totalDiff, avgDiff };
   }).sort((a,b)=>b.avgDiff-a.avgDiff);
   tb.innerHTML = data.map(r=>{
-    const totalDiffTxt = `<span class="${r.totalDiff>0?'risk':'ok-txt'}">${r.totalDiff>0?'+':''}${r.totalDiff}</span>`;
-    const avgDiffTxt = `<span class="${r.avgDiff>0?'risk':'ok-txt'}">${r.avgDiff>0?'+':''}${r.avgDiff}</span>`;
+    const totalDiffTxt = `<span class="${r.totalDiff>0?'risk':'ok-txt'}">${fmtHours(r.totalDiff, true)}</span>`;
+    const avgDiffTxt = `<span class="${r.avgDiff>0?'risk':'ok-txt'}">${fmtHours(r.avgDiff, true)}</span>`;
     return `<tr>
       <td class="inc-zone"><strong>${r.zone}</strong></td>
       <td class="num inc-num">${r.deviceCount}</td>
-      <td class="num inc-num">${r.prev}</td>
-      <td class="num inc-num">${r.prevAvg}</td>
-      <td class="num inc-num">${r.cur}</td>
-      <td class="num inc-num">${r.curAvg}</td>
+      <td class="num inc-num">${fmtHours(r.prev)}</td>
+      <td class="num inc-num">${fmtHours(r.prevAvg)}</td>
+      <td class="num inc-num">${fmtHours(r.cur)}</td>
+      <td class="num inc-num">${fmtHours(r.curAvg)}</td>
       <td class="num inc-num">${totalDiffTxt}</td>
       <td class="num inc-num">${avgDiffTxt}</td>
     </tr>`;
