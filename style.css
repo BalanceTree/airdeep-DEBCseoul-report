@@ -981,7 +981,7 @@ section {
    ══════════════════════════════════════════════════════════════ */
 @media print {
   /* A4 모드: 전체를 균일 축소해 A4 폭에 맞춤 */
-  body.print-a4 .page { zoom: .6; }
+  body.print-a4 .page { zoom: .58; }
 
   /* 인쇄 보강: 어떤 용지 폭에서도 데스크톱 레이아웃 유지 */
   .summary-grid { grid-template-columns: 1.5fr 1fr !important; }
